@@ -9,3 +9,4 @@ app/.env.local
 # docker-compose local stack
 .env
 data/
+certs/
