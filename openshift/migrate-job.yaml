@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mef-web-migrate
+  namespace: mef
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: quay-push-secret
+      containers:
+        - name: migrate
+          image: quay-registry-quay-quay-enterprise.apps.bedrock.linuxera.hq/kutay.eroglu/mef-web:latest
+          command: ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate --accept-data-loss && ./node_modules/.bin/tsx prisma/seed.ts"]
+          workingDir: /opt/app-root/src
+          envFrom:
+            - secretRef:
+                name: mef-web-secret

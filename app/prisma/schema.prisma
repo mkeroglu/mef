@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrganizationType {
+  SOZ
+  NISAN
+  DUGUN
+}
+
+enum FloorType {
+  GIRIS
+  KAT1
+  KAT2
+  KAT3
+  KAT4_UZERI
+}
+
+enum OptionGroupType {
+  SINGLE_SELECT
+  BOOLEAN
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Concept {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  subtitle    String
+  description String
+  imageUrl    String
+  imageData   Bytes?
+  imageMime   String?
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  requests BookingRequest[]
+  bookings Booking[]
+}
+
+model Settings {
+  id                   String   @id @default("singleton")
+  smtpHost             String?
+  smtpPort             Int      @default(465)
+  smtpSecure           Boolean  @default(true)
+  smtpUser             String?
+  smtpPasswordEnc      String?
+  smtpFromEmail        String?
+  smtpFromName         String   @default("MEF Organizasyon")
+  notifyToEmail        String?
+  emailSubjectTemplate String   @default("Yeni Organizasyon Talebi - {{customerName}}")
+  emailBodyTemplate    String   @default("Yeni bir organizasyon talebi geldi, detaylar aşağıda. Admin panelden onaylayabilir veya reddedebilirsiniz.")
+  whatsappBusinessNumber String?
+  updatedAt            DateTime @updatedAt
+}
+
+model BookingRequest {
+  id               String            @id @default(cuid())
+  customerName     String
+  gelinAdi         String?
+  damatAdi         String?
+  phone            String
+  ikinciIletisim   String?
+  email            String?
+  adres            String?
+  eventDate        DateTime
+  kurulumSaati     String?
+  organizationType OrganizationType?
+  asansorVarMi     Boolean?
+  kat              FloorType?
+  guestCount       Int?
+  message          String?
+  configSelections Json?
+  status           RequestStatus     @default(PENDING)
+  conceptId        String
+  concept          Concept           @relation(fields: [conceptId], references: [id])
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  booking Booking?
+}
+
+model OptionGroup {
+  id        String          @id @default(cuid())
+  key       String          @unique
+  label     String
+  type      OptionGroupType
+  helpText  String?
+  imageUrl  String?
+  imageData Bytes?
+  imageMime String?
+  required  Boolean         @default(true)
+  order     Int             @default(0)
+  active    Boolean         @default(true)
+
+  options Option[]
+}
+
+model Option {
+  id        String      @id @default(cuid())
+  groupId   String
+  group     OptionGroup @relation(fields: [groupId], references: [id])
+  label     String
+  imageUrl  String?
+  imageData Bytes?
+  imageMime String?
+  order     Int         @default(0)
+  active    Boolean     @default(true)
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  eventDate        DateTime
+  conceptId        String
+  concept          Concept        @relation(fields: [conceptId], references: [id])
+  customerName     String
+  bookingRequestId String         @unique
+  bookingRequest   BookingRequest @relation(fields: [bookingRequestId], references: [id])
+  createdAt        DateTime       @default(now())
+
+  @@unique([eventDate, conceptId])
+}

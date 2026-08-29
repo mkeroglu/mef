@@ -1,0 +1,27 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: mef-web
+  namespace: mef
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: mef-web
+  namespace: mef
+spec:
+  source:
+    type: Binary
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  output:
+    to:
+      kind: DockerImage
+      name: quay-registry-quay-quay-enterprise.apps.bedrock.linuxera.hq/kutay.eroglu/mef-web:latest
+    pushSecret:
+      name: quay-push-secret
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
