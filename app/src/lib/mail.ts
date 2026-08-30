@@ -69,6 +69,17 @@ function sectionHeading(title: string): string {
   return `<tr><td colspan="2" style="padding:16px 0 4px;color:#8a6327;font-size:13px;text-transform:uppercase;letter-spacing:.1em;font-weight:bold;border-top:1px solid rgba(184,137,76,0.2);">${escapeHtml(title)}</td></tr>`;
 }
 
+function detailRowLink(label: string, linkLabel: string, url: string): string {
+  return `<tr>
+    <td style="padding:6px 14px 6px 0;color:#8a7857;font-size:14px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;vertical-align:top;">${escapeHtml(label)}</td>
+    <td style="padding:6px 0;font-size:16px;"><a href="${url}" style="color:#8a6327;text-decoration:underline;">${escapeHtml(linkLabel)}</a></td>
+  </tr>`;
+}
+
+function googleMapsUrl(address: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+}
+
 export async function sendTestEmail(to: string) {
   const ctx = await getTransport();
   if (!ctx) throw new Error("SMTP ayarları eksik");
@@ -134,6 +145,7 @@ export async function sendNewRequestNotification(data: {
       ${detailRow("2. İletişim", data.ikinciIletisim)}
       ${detailRow("E-posta", vars.email)}
       ${detailRow("Adres", data.adres)}
+      ${detailRowLink("Konum", "Google Maps'te Aç ↗", googleMapsUrl(data.adres))}
       ${sectionHeading("Organizasyon")}
       ${detailRow("Tür", data.organizationTypeLabel)}
       ${detailRow("Tarih", eventDateStr)}
@@ -166,6 +178,7 @@ export async function sendNewRequestNotification(data: {
       `Telefon: 0${data.phone}`,
       `2. İletişim: ${data.ikinciIletisim}`,
       `Adres: ${data.adres}`,
+      `Konum (Google Maps): ${googleMapsUrl(data.adres)}`,
       `Tür: ${data.organizationTypeLabel}`,
       `Tarih: ${eventDateStr}`,
       `Kurulum Saati: ${data.kurulumSaati}`,
