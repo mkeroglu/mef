@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { checkRateLimit } from "@/lib/ratelimit";
-import { sendNewRequestNotification } from "@/lib/mail";
+import { sendNewRequestNotification, sendCustomerConfirmation } from "@/lib/mail";
 
 const configSelectionSchema = z.object({
   optionId: z.string().optional(),
@@ -146,6 +146,15 @@ export async function POST(req: NextRequest) {
     message: data.message ?? null,
     configSummary,
   });
+
+  if (data.email) {
+    await sendCustomerConfirmation({
+      customerName,
+      email: data.email,
+      eventDate,
+      conceptName: concept.name,
+    });
+  }
 
   return NextResponse.json({ id: created.id }, { status: 201 });
 }

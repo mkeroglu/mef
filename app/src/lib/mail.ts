@@ -188,3 +188,47 @@ export async function sendNewRequestNotification(data: {
     console.error("Bildirim e-postası gönderilemedi:", err);
   }
 }
+
+export async function sendCustomerConfirmation(data: {
+  customerName: string;
+  email: string;
+  eventDate: Date;
+  conceptName: string;
+}) {
+  try {
+    const ctx = await getTransport();
+    if (!ctx) return;
+    const { transporter, settings } = ctx;
+
+    const eventDateStr = data.eventDate.toLocaleDateString("tr-TR");
+    const vars = {
+      customerName: data.customerName,
+      eventDate: eventDateStr,
+      concept: data.conceptName,
+    };
+
+    const bodyText = renderTemplate(settings.customerConfirmBodyTemplate, vars);
+    const bodyHtml = `<p style="margin:0;">${escapeHtml(bodyText).replace(/\n/g, "<br/>")}</p>`;
+
+    const whatsappUrl = settings.whatsappBusinessNumber
+      ? waLink(settings.whatsappBusinessNumber, `Merhaba, ${eventDateStr} tarihli talebim hakkında bilgi almak istiyorum.`)
+      : undefined;
+
+    const html = emailShell({
+      title: "Talebiniz Alındı",
+      bodyHtml,
+      ctaLabel: whatsappUrl ? "WhatsApp'tan Bize Yazın" : undefined,
+      ctaUrl: whatsappUrl,
+    });
+
+    await transporter.sendMail({
+      from: `"${settings.smtpFromName}" <${settings.smtpFromEmail || settings.smtpUser}>`,
+      to: data.email,
+      subject: renderTemplate(settings.customerConfirmSubjectTemplate, vars),
+      text: bodyText + (whatsappUrl ? `\n\nWhatsApp'tan yazmak için: ${whatsappUrl}` : ""),
+      html,
+    });
+  } catch (err) {
+    console.error("Müşteri onay e-postası gönderilemedi:", err);
+  }
+}

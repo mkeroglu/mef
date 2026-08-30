@@ -190,12 +190,13 @@ async function main() {
   if (!adminPassword) {
     throw new Error("ADMIN_PASSWORD env var is required to seed the admin user");
   }
-  const passwordHash = await bcrypt.hash(adminPassword, 12);
-  await prisma.adminUser.upsert({
-    where: { email: adminEmail },
-    update: { passwordHash },
-    create: { email: adminEmail, passwordHash },
-  });
+  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: adminEmail } });
+  if (!existingAdmin) {
+    const passwordHash = await bcrypt.hash(adminPassword, 12);
+    await prisma.adminUser.create({ data: { email: adminEmail, passwordHash } });
+  }
+  // Intentionally does not overwrite the password on re-seed: the admin may
+  // have changed it via the admin panel since the initial seed.
 
   console.log("Seed complete:", concepts.length, "concepts,", optionGroups.length, "option groups,", "admin:", adminEmail);
 }

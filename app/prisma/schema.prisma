@@ -69,6 +69,8 @@ model Settings {
   notifyToEmail        String?
   emailSubjectTemplate String   @default("Yeni Organizasyon Talebi - {{customerName}}")
   emailBodyTemplate    String   @default("Yeni bir organizasyon talebi geldi, detaylar aşağıda. Admin panelden onaylayabilir veya reddedebilirsiniz.")
+  customerConfirmSubjectTemplate String @default("Talebiniz Alındı - MEF Organizasyon")
+  customerConfirmBodyTemplate    String @default("Merhaba {{customerName}}, {{eventDate}} tarihli {{concept}} konsept talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz. Bizi tercih ettiğiniz için teşekkür ederiz.")
   whatsappBusinessNumber String?
   updatedAt            DateTime @updatedAt
 }

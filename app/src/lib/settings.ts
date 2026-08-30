@@ -20,6 +20,8 @@ export type SettingsUpdateInput = {
   notifyToEmail?: string | null;
   emailSubjectTemplate?: string;
   emailBodyTemplate?: string;
+  customerConfirmSubjectTemplate?: string;
+  customerConfirmBodyTemplate?: string;
   whatsappBusinessNumber?: string | null;
 };
 

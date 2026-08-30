@@ -41,6 +41,8 @@ export async function PATCH(req: NextRequest) {
     notifyToEmail: body.notifyToEmail,
     emailSubjectTemplate: body.emailSubjectTemplate,
     emailBodyTemplate: body.emailBodyTemplate,
+    customerConfirmSubjectTemplate: body.customerConfirmSubjectTemplate,
+    customerConfirmBodyTemplate: body.customerConfirmBodyTemplate,
     whatsappBusinessNumber,
   });
 

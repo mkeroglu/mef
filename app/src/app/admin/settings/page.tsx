@@ -13,6 +13,8 @@ type Settings = {
   notifyToEmail: string | null;
   emailSubjectTemplate: string;
   emailBodyTemplate: string;
+  customerConfirmSubjectTemplate: string;
+  customerConfirmBodyTemplate: string;
   whatsappBusinessNumber: string | null;
   hasSmtpPassword: boolean;
 };
@@ -25,6 +27,13 @@ export default function SettingsPage() {
   const [testTo, setTestTo] = useState("");
   const [testMsg, setTestMsg] = useState("");
   const [testing, setTesting] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   function load() {
     fetch("/api/admin/settings")
@@ -72,6 +81,38 @@ export default function SettingsPage() {
     const data = await res.json().catch(() => ({}));
     setTestMsg(res.ok ? "Test e-postası gönderildi, kutunuzu kontrol edin." : data.error || "Gönderilemedi.");
     setTesting(false);
+  }
+
+  async function handlePasswordChange(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPasswordMsg("");
+    setPasswordError("");
+
+    if (newPassword !== newPasswordConfirm) {
+      setPasswordError("Yeni şifreler eşleşmiyor.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError("Yeni şifre en az 8 karakter olmalı.");
+      return;
+    }
+
+    setChangingPassword(true);
+    const res = await fetch("/api/admin/account/password", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    if (res.ok) {
+      setPasswordMsg("Şifreniz değiştirildi.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setNewPasswordConfirm("");
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setPasswordError(data.error || "Şifre değiştirilemedi.");
+    }
+    setChangingPassword(false);
   }
 
   if (!settings) {
@@ -203,6 +244,30 @@ export default function SettingsPage() {
 
         <div>
           <h3 className="font-display" style={{ color: "var(--gold-deep)", marginBottom: 14 }}>
+            Müşteri Onay E-postası
+          </h3>
+          <p style={{ color: "var(--ink-soft)", fontSize: 15, marginTop: -8, marginBottom: 16 }}>
+            Müşteri talep formunda e-posta bıraktıysa, talebi gönderir göndermez bu mail otomatik gider.
+            Kullanılabilir alanlar: <code>{"{{customerName}}"}</code> <code>{"{{eventDate}}"}</code>{" "}
+            <code>{"{{concept}}"}</code>
+          </p>
+          <label>Konu</label>
+          <input
+            value={settings.customerConfirmSubjectTemplate}
+            onChange={(e) => setSettings({ ...settings, customerConfirmSubjectTemplate: e.target.value })}
+          />
+          <div style={{ marginTop: 16 }}>
+            <label>İçerik</label>
+            <textarea
+              rows={5}
+              value={settings.customerConfirmBodyTemplate}
+              onChange={(e) => setSettings({ ...settings, customerConfirmBodyTemplate: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="font-display" style={{ color: "var(--gold-deep)", marginBottom: 14 }}>
             WhatsApp
           </h3>
           <label>İşletme WhatsApp Numarası (5XX XXX XXXX)</label>
@@ -235,6 +300,29 @@ export default function SettingsPage() {
         </div>
         {testMsg && <p style={{ color: "var(--ink-soft)" }}>{testMsg}</p>}
       </div>
+
+      <form onSubmit={handlePasswordChange} className="card" style={{ padding: 30, marginTop: 24, display: "grid", gap: 16, maxWidth: 480 }}>
+        <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: 0 }}>
+          Şifre Değiştir
+        </h3>
+        <div>
+          <label>Mevcut Şifre</label>
+          <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+        </div>
+        <div>
+          <label>Yeni Şifre</label>
+          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={8} />
+        </div>
+        <div>
+          <label>Yeni Şifre (Tekrar)</label>
+          <input type="password" value={newPasswordConfirm} onChange={(e) => setNewPasswordConfirm(e.target.value)} required minLength={8} />
+        </div>
+        {passwordError && <p style={{ color: "#a33" }}>{passwordError}</p>}
+        {passwordMsg && <p style={{ color: "var(--gold-deep)" }}>{passwordMsg}</p>}
+        <button type="submit" className="btn" disabled={changingPassword} style={{ justifySelf: "start" }}>
+          {changingPassword ? "Değiştiriliyor..." : "Şifreyi Değiştir"}
+        </button>
+      </form>
     </AdminShell>
   );
 }
