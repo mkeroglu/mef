@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { redis } from "@/lib/redis";
-
-const CACHE_KEY = "mef:concepts:active";
-const CACHE_TTL = 60;
 
 export const dynamic = "force-dynamic";
 
@@ -11,16 +7,11 @@ export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date");
 
   if (!date) {
-    const cached = await redis.get(CACHE_KEY);
-    if (cached) {
-      return NextResponse.json(JSON.parse(cached));
-    }
     const concepts = await prisma.concept.findMany({
       where: { active: true },
       orderBy: { order: "asc" },
       select: { id: true, slug: true, name: true, subtitle: true, description: true, imageUrl: true },
     });
-    await redis.set(CACHE_KEY, JSON.stringify(concepts), "EX", CACHE_TTL);
     return NextResponse.json(concepts);
   }
 

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -44,9 +44,9 @@ model Concept {
   slug        String    @unique
   name        String
   subtitle    String
-  description String
+  description String    @db.Text
   imageUrl    String
-  imageData   Bytes?
+  imageData   Bytes?    @db.LongBlob
   imageMime   String?
   order       Int       @default(0)
   active      Boolean   @default(true)
@@ -63,14 +63,14 @@ model Settings {
   smtpPort             Int      @default(465)
   smtpSecure           Boolean  @default(true)
   smtpUser             String?
-  smtpPasswordEnc      String?
+  smtpPasswordEnc      String?  @db.Text
   smtpFromEmail        String?
   smtpFromName         String   @default("MEF Organizasyon")
   notifyToEmail        String?
   emailSubjectTemplate String   @default("Yeni Organizasyon Talebi - {{customerName}}")
-  emailBodyTemplate    String   @default("Yeni bir organizasyon talebi geldi, detaylar aşağıda. Admin panelden onaylayabilir veya reddedebilirsiniz.")
+  emailBodyTemplate    String   @db.Text
   customerConfirmSubjectTemplate String @default("Talebiniz Alındı - MEF Organizasyon")
-  customerConfirmBodyTemplate    String @default("Merhaba {{customerName}}, {{eventDate}} tarihli {{concept}} konsept talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz. Bizi tercih ettiğiniz için teşekkür ederiz.")
+  customerConfirmBodyTemplate    String @db.Text
   whatsappBusinessNumber String?
   updatedAt            DateTime @updatedAt
 }
@@ -83,14 +83,14 @@ model BookingRequest {
   phone            String
   ikinciIletisim   String?
   email            String?
-  adres            String?
+  adres            String?           @db.Text
   eventDate        DateTime
   kurulumSaati     String?
   organizationType OrganizationType?
   asansorVarMi     Boolean?
   kat              FloorType?
   guestCount       Int?
-  message          String?
+  message          String?           @db.Text
   configSelections Json?
   status           RequestStatus     @default(PENDING)
   conceptId        String
@@ -108,7 +108,7 @@ model OptionGroup {
   type      OptionGroupType
   helpText  String?
   imageUrl  String?
-  imageData Bytes?
+  imageData Bytes?          @db.LongBlob
   imageMime String?
   required  Boolean         @default(true)
   order     Int             @default(0)
@@ -123,7 +123,7 @@ model Option {
   group     OptionGroup @relation(fields: [groupId], references: [id])
   label     String
   imageUrl  String?
-  imageData Bytes?
+  imageData Bytes?      @db.LongBlob
   imageMime String?
   order     Int         @default(0)
   active    Boolean     @default(true)

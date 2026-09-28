@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { redis } from "@/lib/redis";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +64,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   const updated = await prisma.concept.update({ where: { id: params.id }, data });
-  await redis.del("mef:concepts:active");
 
   const { imageData: _omit, ...safe } = updated;
   return NextResponse.json(safe);

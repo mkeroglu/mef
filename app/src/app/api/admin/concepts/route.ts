@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { redis } from "@/lib/redis";
 import { slugify } from "@/lib/slug";
 
 export const dynamic = "force-dynamic";
@@ -71,8 +70,6 @@ export async function POST(req: NextRequest) {
     where: { id: created.id },
     data: { imageUrl: `/api/images/concepts/${created.id}` },
   });
-
-  await redis.del("mef:concepts:active");
 
   const { imageData: _omit, ...safe } = updated;
   return NextResponse.json(safe, { status: 201 });

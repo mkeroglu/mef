@@ -3,10 +3,24 @@ import { encryptSecret } from "./crypto";
 
 const SETTINGS_ID = "singleton";
 
+// MySQL doesn't allow a DEFAULT on TEXT columns, so these two live here
+// instead of in the schema and are only applied when the singleton row is
+// first created.
+const DEFAULT_EMAIL_BODY_TEMPLATE =
+  "Yeni bir organizasyon talebi geldi, detaylar aşağıda. Admin panelden onaylayabilir veya reddedebilirsiniz.";
+const DEFAULT_CUSTOMER_CONFIRM_BODY_TEMPLATE =
+  "Merhaba {{customerName}}, {{eventDate}} tarihli {{concept}} konsept talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz. Bizi tercih ettiğiniz için teşekkür ederiz.";
+
 export async function getSettings() {
   const settings = await prisma.settings.findUnique({ where: { id: SETTINGS_ID } });
   if (settings) return settings;
-  return prisma.settings.create({ data: { id: SETTINGS_ID } });
+  return prisma.settings.create({
+    data: {
+      id: SETTINGS_ID,
+      emailBodyTemplate: DEFAULT_EMAIL_BODY_TEMPLATE,
+      customerConfirmBodyTemplate: DEFAULT_CUSTOMER_CONFIRM_BODY_TEMPLATE,
+    },
+  });
 }
 
 export type SettingsUpdateInput = {
@@ -34,7 +48,12 @@ export async function updateSettings(input: SettingsUpdateInput) {
   return prisma.settings.upsert({
     where: { id: SETTINGS_ID },
     update: data,
-    create: { id: SETTINGS_ID, ...data },
+    create: {
+      id: SETTINGS_ID,
+      emailBodyTemplate: DEFAULT_EMAIL_BODY_TEMPLATE,
+      customerConfirmBodyTemplate: DEFAULT_CUSTOMER_CONFIRM_BODY_TEMPLATE,
+      ...data,
+    },
   });
 }
 
