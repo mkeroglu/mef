@@ -11,3 +11,4 @@ app/.env.local
 data/
 certs/
 mef_cpanel_import.sql
+mef-deploy.tar.gz

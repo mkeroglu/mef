@@ -181,6 +181,21 @@ button {
     grid-template-columns: 1fr;
     gap: 2px;
   }
+
+  /* On mobile, hero-style text blocks read better centered — closer to
+     the flowing, centered feel of viptrip.com.tr-style layouts. */
+  .hero-text-block {
+    text-align: center;
+  }
+
+  .hero-text-block p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-row {
+    justify-content: center;
+  }
 }
 
 /* Mobile nav */
