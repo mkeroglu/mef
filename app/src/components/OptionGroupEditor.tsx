@@ -97,7 +97,7 @@ export default function OptionGroupEditor({ group, onChange }: { group: Group; o
 
   return (
     <div className="card" style={{ padding: 24, display: "grid", gap: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
         <div style={{ flex: 1, display: "grid", gap: 10 }}>
           <input value={label} onChange={(e) => setLabel(e.target.value)} style={{ fontWeight: 700, fontSize: 17 }} />
           <input
@@ -105,7 +105,7 @@ export default function OptionGroupEditor({ group, onChange }: { group: Group; o
             onChange={(e) => setHelpText(e.target.value)}
             placeholder="Yardım metni / fiyat notu (opsiyonel, örn. 500 TL)"
           />
-          <div style={{ display: "flex", gap: 20, alignItems: "center", fontSize: 14 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 14 }}>
             <span className="badge badge-pending">{group.type === "SINGLE_SELECT" ? "Tekli Seçim" : "Evet/Hayır"}</span>
             <label style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 0, textTransform: "none" }}>
               <input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)} style={{ width: "auto" }} />
@@ -143,7 +143,7 @@ export default function OptionGroupEditor({ group, onChange }: { group: Group; o
         <div style={{ display: "grid", gap: 10 }}>
           <label style={{ marginBottom: 0 }}>Seçenekler</label>
           {group.options.map((opt) => (
-            <div key={opt.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div key={opt.id} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
               <div style={thumbStyle}>
                 {opt.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -173,7 +173,7 @@ export default function OptionGroupEditor({ group, onChange }: { group: Group; o
             </div>
           ))}
 
-          <form onSubmit={addOption} style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 6 }}>
+          <form onSubmit={addOption} style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginTop: 6 }}>
             <input
               value={newOptionLabel}
               onChange={(e) => setNewOptionLabel(e.target.value)}

@@ -75,7 +75,7 @@ export default function ConceptForm({ initial }: { initial?: ConceptInitial }) {
         <label>Açıklama</label>
         <textarea rows={5} value={description} onChange={(e) => setDescription(e.target.value)} required minLength={10} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div className="grid-2">
         <div>
           <label>Sıra</label>
           <input type="number" value={order} onChange={(e) => setOrder(Number(e.target.value))} />

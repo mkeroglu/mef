@@ -17,14 +17,7 @@ export default async function HomePage() {
       <Navbar />
 
       <section className="container" style={{ padding: "40px 0 70px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.1fr 0.9fr",
-            gap: 48,
-            alignItems: "center",
-          }}
-        >
+        <div className="hero-grid">
           <div>
             <p className="eyebrow">Nişan &middot; Söz &middot; Özel Davetler</p>
             <h1
@@ -37,7 +30,7 @@ export default async function HomePage() {
               MEF Organizasyon olarak, nişan ve söz törenleriniz için zarafeti sadelikle
               buluşturan sahne tasarımları hazırlıyoruz. Her anınız, özel ve unutulmaz olsun.
             </p>
-            <div style={{ display: "flex", gap: 16, marginTop: 32 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 32 }}>
               <a href="/talep" className="btn">
                 Organizasyon Talep Et
               </a>
@@ -77,7 +70,10 @@ export default async function HomePage() {
       </section>
 
       <section id="hakkimizda" className="container" style={{ padding: "20px 0 80px" }}>
-        <div className="card" style={{ padding: "48px 40px", textAlign: "center", maxWidth: 800, margin: "0 auto" }}>
+        <div
+          className="card"
+          style={{ padding: "clamp(24px, 6vw, 48px) clamp(20px, 5vw, 40px)", textAlign: "center", maxWidth: 800, margin: "0 auto" }}
+        >
           <p className="eyebrow">Hakkımızda</p>
           <h2 className="font-display" style={{ fontSize: 30, margin: "10px 0 16px" }}>
             MEF Organizasyon

@@ -14,7 +14,7 @@ export default async function ConceptPage({ params }: { params: { slug: string }
     <>
       <Navbar />
       <section className="container" style={{ padding: "20px 0 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 48, alignItems: "center" }}>
+        <div className="hero-grid">
           <div className="card" style={{ position: "relative", aspectRatio: "4 / 3", overflow: "hidden" }}>
             <Image src={concept.imageUrl} alt={concept.name} fill style={{ objectFit: "cover" }} priority />
           </div>

@@ -10,3 +10,4 @@ app/.env.local
 .env
 data/
 certs/
+mef_cpanel_import.sql

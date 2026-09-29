@@ -139,7 +139,7 @@ export default function SettingsPage() {
             kullanıcı adı Gmail adresiniz, şifre olarak da Google hesabınızdan oluşturduğunuz{" "}
             <strong>Uygulama Şifresi</strong> (normal şifreniz değil) girilmeli.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16 }}>
+          <div className="grid-2">
             <div>
               <label>SMTP Sunucu</label>
               <input
@@ -157,7 +157,7 @@ export default function SettingsPage() {
               />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+          <div className="grid-2" style={{ marginTop: 16 }}>
             <div>
               <label>Kullanıcı Adı (Gmail adresi)</label>
               <input
@@ -190,7 +190,7 @@ export default function SettingsPage() {
               SSL/TLS kullan (465 portu için işaretli olmalı, 587 için işaretsiz)
             </label>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
+          <div className="grid-2" style={{ marginTop: 16 }}>
             <div>
               <label>Gönderen Adresi</label>
               <input

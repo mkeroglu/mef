@@ -24,11 +24,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div style={{ minHeight: "100vh" }}>
       <header style={{ padding: "18px 0", borderBottom: "1px solid rgba(184,137,76,0.25)" }}>
-        <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div
+          className="container"
+          style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", rowGap: 10 }}
+        >
           <span className="font-display" style={{ fontSize: 22, color: "var(--gold-deep)" }}>
             MEF Admin
           </span>
-          <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          <nav style={{ display: "flex", flexWrap: "wrap", gap: "10px 20px", alignItems: "center" }}>
             {links.map((l) => (
               <Link
                 key={l.href}

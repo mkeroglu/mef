@@ -25,6 +25,14 @@ body {
   font-family: "Cormorant Garamond", "Georgia", serif;
   font-size: 19px;
   line-height: 1.6;
+  overflow-x: hidden;
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 17px;
+  }
 }
 
 h1,
@@ -133,6 +141,86 @@ button {
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+@media (max-width: 560px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* Two-column layouts used across the site (hero, forms) — collapse to a
+   single column on narrow screens since inline style objects can't carry
+   media queries themselves. */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 760px) {
+  .grid-2,
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+/* Mobile nav */
+.nav-toggle {
+  display: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px 24px 24px;
+    background: var(--ivory);
+    border-bottom: 1px solid rgba(184, 137, 76, 0.25);
+    box-shadow: 0 14px 24px -18px rgba(60, 44, 26, 0.4);
+  }
+
+  .nav-links.open .btn {
+    margin-top: 10px;
+  }
 }
 
 .gold-divider {

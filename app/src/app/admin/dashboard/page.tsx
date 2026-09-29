@@ -66,11 +66,11 @@ export default function DashboardPage() {
 
   return (
     <AdminShell>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 className="font-display" style={{ margin: 0 }}>
           Organizasyon Talepleri
         </h1>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: 200 }}>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: 200, maxWidth: "100%" }}>
           <option value="PENDING">Bekleyenler</option>
           <option value="APPROVED">Onaylananlar</option>
           <option value="REJECTED">Reddedilenler</option>

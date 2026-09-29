@@ -38,7 +38,7 @@ export default function ConceptsPage() {
 
   return (
     <AdminShell>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <h1 className="font-display" style={{ margin: 0 }}>
           Konseptler
         </h1>
@@ -48,12 +48,12 @@ export default function ConceptsPage() {
       </div>
       <div style={{ display: "grid", gap: 18 }}>
         {concepts?.map((c) => (
-          <div key={c.id} className="card" style={{ padding: 22, display: "flex", gap: 20 }}>
+          <div key={c.id} className="card" style={{ padding: 22, display: "flex", flexWrap: "wrap", gap: 20 }}>
             <div style={{ position: "relative", width: 120, height: 90, flexShrink: 0, borderRadius: 10, overflow: "hidden" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={c.imageUrl} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: 200 }}>
               <h3 className="font-display" style={{ margin: "0 0 6px", color: "var(--gold-deep)" }}>
                 {c.name}
               </h3>

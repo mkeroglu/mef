@@ -350,12 +350,12 @@ export default function RequestForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card" style={{ padding: 36, display: "grid", gap: 28 }}>
+    <form onSubmit={handleSubmit} className="card" style={{ padding: "clamp(18px, 5vw, 36px)", display: "grid", gap: 28 }}>
       <div>
         <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 16px" }}>
           Çift Bilgileri
         </h3>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="grid-2">
           <div>
             <label htmlFor="gelinAdi">Gelin Adı Soyadı</label>
             <input id="gelinAdi" name="gelinAdi" required minLength={2} />
@@ -371,7 +371,7 @@ export default function RequestForm() {
         <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 16px" }}>
           İletişim ve Adres
         </h3>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div className="grid-2">
           <div>
             <label htmlFor="phone">Telefon</label>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -477,7 +477,7 @@ export default function RequestForm() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 }}>
+        <div className="grid-2" style={{ marginTop: 20 }}>
           <div>
             <label>Asansör Var mı?</label>
             <div style={{ display: "flex", gap: 10 }}>

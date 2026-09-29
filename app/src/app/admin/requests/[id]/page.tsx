@@ -10,7 +10,7 @@ const statusClass: Record<string, string> = { PENDING: "badge-pending", APPROVED
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 12, padding: "8px 0", borderBottom: "1px solid rgba(184,137,76,0.15)" }}>
+    <div className="detail-row" style={{ padding: "8px 0", borderBottom: "1px solid rgba(184,137,76,0.15)" }}>
       <span style={{ color: "var(--ink-soft)", fontSize: 14, textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</span>
       <span style={{ fontSize: 16 }}>{value}</span>
     </div>
@@ -62,8 +62,8 @@ export default function RequestDetailPage({ params }: { params: { id: string } }
         ← Taleplere Dön
       </button>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h1 className="font-display" style={{ margin: 0 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h1 className="font-display" style={{ margin: 0, wordBreak: "break-word" }}>
           {data.customerName}
         </h1>
         <span className={`badge ${statusClass[data.status]}`}>{statusLabel[data.status]}</span>

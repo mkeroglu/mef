@@ -43,7 +43,7 @@ export default function OptionsPage() {
 
   return (
     <AdminShell>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <h1 className="font-display" style={{ margin: 0 }}>
           Seçenek Grupları
         </h1>
@@ -62,7 +62,7 @@ export default function OptionsPage() {
             <label>Grup Adı</label>
             <input value={newLabel} onChange={(e) => setNewLabel(e.target.value)} required placeholder="örn. Masa Örtüsü Seçimi" />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 14 }}>
+          <div className="grid-2" style={{ gap: 14 }}>
             <div>
               <label>Tip</label>
               <select value={newType} onChange={(e) => setNewType(e.target.value as any)}>
