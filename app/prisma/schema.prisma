@@ -18,6 +18,7 @@ enum OrganizationType {
   NISAN
   DUGUN
   KINA
+  SUNNET
   DOGUM_GUNU
   BRIDE_TO_BE
   DIGER

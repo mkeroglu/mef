@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { getSettings, renderTemplate } from "./settings";
 import { decryptSecret } from "./crypto";
 import { waLink } from "./phone";
+import { getNameFieldConfig } from "./organizationType";
 
 async function getTransport() {
   const settings = await getSettings();
@@ -99,8 +100,9 @@ export async function sendTestEmail(to: string) {
 
 export async function sendNewRequestNotification(data: {
   customerName: string;
+  organizationType: string;
   gelinAdi: string;
-  damatAdi: string;
+  damatAdi: string | null;
   phone: string;
   ikinciIletisim: string;
   email: string | null;
@@ -111,7 +113,6 @@ export async function sendNewRequestNotification(data: {
   asansorVarMi: boolean;
   katLabel: string;
   conceptName: string;
-  guestCount: number | null;
   message: string | null;
   configSummary: { label: string; value: string }[];
 }) {
@@ -120,6 +121,7 @@ export async function sendNewRequestNotification(data: {
     if (!ctx || !ctx.settings.notifyToEmail) return;
     const { transporter, settings } = ctx;
     const notifyToEmail: string = ctx.settings.notifyToEmail;
+    const nameConfig = getNameFieldConfig(data.organizationType);
 
     const eventDateStr = data.eventDate.toLocaleDateString("tr-TR");
     const vars = {
@@ -128,7 +130,6 @@ export async function sendNewRequestNotification(data: {
       email: data.email || "-",
       eventDate: eventDateStr,
       concept: data.conceptName,
-      guestCount: data.guestCount ? String(data.guestCount) : "-",
       message: data.message || "-",
     };
 
@@ -137,10 +138,13 @@ export async function sendNewRequestNotification(data: {
       `Merhaba ${data.customerName}, MEF Organizasyon'dan yazıyoruz. ${eventDateStr} tarihli ${data.conceptName} talebiniz için sizinle iletişime geçmek istedik.`
     );
 
+    const nameRows =
+      detailRow(nameConfig.primary, data.gelinAdi) +
+      (nameConfig.secondary && data.damatAdi ? detailRow(nameConfig.secondary, data.damatAdi) : "");
+
     const detailsHtml = `<table role="presentation" style="border-collapse:collapse;margin-top:6px;width:100%;">
-      ${sectionHeading("Çift ve İletişim")}
-      ${detailRow("Gelin", data.gelinAdi)}
-      ${detailRow("Damat", data.damatAdi)}
+      ${sectionHeading("Kişi ve İletişim")}
+      ${nameRows}
       ${detailRow("Telefon", `0${data.phone}`)}
       ${detailRow("2. İletişim", data.ikinciIletisim)}
       ${detailRow("E-posta", vars.email)}
@@ -153,7 +157,6 @@ export async function sendNewRequestNotification(data: {
       ${detailRow("Kat", data.katLabel)}
       ${detailRow("Asansör", data.asansorVarMi ? "Var" : "Yok")}
       ${detailRow("Konsept", data.conceptName)}
-      ${detailRow("Davetli Sayısı", vars.guestCount)}
       ${sectionHeading("Seçimler")}
       ${data.configSummary.map((c) => detailRow(c.label, c.value)).join("")}
       ${sectionHeading("Not")}
@@ -173,8 +176,8 @@ export async function sendNewRequestNotification(data: {
     const textLines = [
       customBodyText,
       "",
-      `Gelin: ${data.gelinAdi}`,
-      `Damat: ${data.damatAdi}`,
+      `${nameConfig.primary}: ${data.gelinAdi}`,
+      ...(nameConfig.secondary && data.damatAdi ? [`${nameConfig.secondary}: ${data.damatAdi}`] : []),
       `Telefon: 0${data.phone}`,
       `2. İletişim: ${data.ikinciIletisim}`,
       `Adres: ${data.adres}`,

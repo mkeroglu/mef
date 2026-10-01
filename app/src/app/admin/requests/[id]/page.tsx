@@ -85,10 +85,12 @@ export default function RequestDetailPage({ params }: { params: { id: string } }
       <div className="card" style={{ padding: 28, display: "grid", gap: 24 }}>
         <div>
           <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 8px" }}>
-            Çift ve İletişim
+            Kişi ve İletişim
           </h3>
-          <Row label="Gelin" value={data.gelinAdi || "-"} />
-          <Row label="Damat" value={data.damatAdi || "-"} />
+          <Row label={data.nameFieldConfig?.primary || "Ad Soyad"} value={data.gelinAdi || "-"} />
+          {data.nameFieldConfig?.secondary && data.damatAdi && (
+            <Row label={data.nameFieldConfig.secondary} value={data.damatAdi} />
+          )}
           <Row
             label="Telefon"
             value={
@@ -112,7 +114,7 @@ export default function RequestDetailPage({ params }: { params: { id: string } }
           <Row label="Kat" value={data.katLabel || "-"} />
           <Row label="Asansör" value={data.asansorVarMi === null ? "-" : data.asansorVarMi ? "Var" : "Yok"} />
           <Row label="Konsept" value={data.concept?.name || "-"} />
-          <Row label="Davetli Sayısı" value={data.guestCount ?? "-"} />
+          {data.guestCount != null && <Row label="Davetli Sayısı" value={data.guestCount} />}
         </div>
 
         {data.configSummary?.length > 0 && (

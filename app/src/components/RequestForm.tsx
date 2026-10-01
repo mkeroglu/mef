@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { normalizePhoneInput, formatPhoneDisplay, isValidTrPhone } from "@/lib/phone";
+import { ORG_TYPE_OPTIONS, getNameFieldConfig, buildCustomerName } from "@/lib/organizationType";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 
 type Concept = {
@@ -41,16 +42,6 @@ const KAT_OPTIONS = [
   { value: "KAT2", label: "2. Kat" },
   { value: "KAT3", label: "3. Kat" },
   { value: "KAT4_UZERI", label: "4. Kat ve Üzeri" },
-];
-
-const ORG_TYPE_OPTIONS = [
-  { value: "SOZ", label: "Söz" },
-  { value: "NISAN", label: "Nişan" },
-  { value: "DUGUN", label: "Düğün" },
-  { value: "KINA", label: "Kına" },
-  { value: "DOGUM_GUNU", label: "Doğum Günü" },
-  { value: "BRIDE_TO_BE", label: "Bride to Be" },
-  { value: "DIGER", label: "Diğer" },
 ];
 
 function PickerCard({
@@ -257,6 +248,11 @@ export default function RequestForm() {
       setStatus("error");
       return;
     }
+    if (!organizationType) {
+      setErrorMsg("Lütfen organizasyon türünü seçin.");
+      setStatus("error");
+      return;
+    }
     if (!conceptId) {
       setErrorMsg("Lütfen bir konsept seçin.");
       setStatus("error");
@@ -264,11 +260,6 @@ export default function RequestForm() {
     }
     if (!eventDate) {
       setErrorMsg("Lütfen kurulum tarihi seçin.");
-      setStatus("error");
-      return;
-    }
-    if (!organizationType) {
-      setErrorMsg("Lütfen organizasyon tercihinizi seçin.");
       setStatus("error");
       return;
     }
@@ -309,7 +300,7 @@ export default function RequestForm() {
 
     const payload = {
       gelinAdi: String(form.get("gelinAdi") || ""),
-      damatAdi: String(form.get("damatAdi") || ""),
+      damatAdi: nameConfig.secondary ? String(form.get("damatAdi") || "") : undefined,
       phone,
       ikinciIletisim: String(form.get("ikinciIletisim") || ""),
       email: String(form.get("email") || ""),
@@ -352,23 +343,49 @@ export default function RequestForm() {
     );
   }
 
+  const nameConfig = getNameFieldConfig(organizationType);
+
   return (
     <form onSubmit={handleSubmit} className="card" style={{ padding: "clamp(18px, 5vw, 36px)", display: "grid", gap: 28 }}>
       <div>
-        <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 16px" }}>
-          Çift Bilgileri
+        <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 6px" }}>
+          Organizasyon Türü
         </h3>
-        <div className="grid-2">
-          <div>
-            <label htmlFor="gelinAdi">Gelin Adı Soyadı</label>
-            <input id="gelinAdi" name="gelinAdi" required minLength={2} />
-          </div>
-          <div>
-            <label htmlFor="damatAdi">Damat Adı Soyadı</label>
-            <input id="damatAdi" name="damatAdi" required minLength={2} />
-          </div>
+        <p style={{ color: "var(--ink-soft)", fontSize: 15, margin: "0 0 10px" }}>
+          Hangi organizasyon için talep ediyorsunuz? Diğer alanlar buna göre şekillenecek.
+        </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {ORG_TYPE_OPTIONS.map((o) => (
+            <PickerCard
+              key={o.value}
+              imageUrl={null}
+              label={o.label}
+              selected={organizationType === o.value}
+              onClick={() => setOrganizationType(o.value)}
+            />
+          ))}
         </div>
       </div>
+
+      {organizationType && (
+        <div>
+          <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 16px" }}>
+            Kişi Bilgileri
+          </h3>
+          <div className={nameConfig.secondary ? "grid-2" : undefined}>
+            <div>
+              <label htmlFor="gelinAdi">{nameConfig.primary}</label>
+              <input id="gelinAdi" name="gelinAdi" required minLength={2} />
+            </div>
+            {nameConfig.secondary && (
+              <div>
+                <label htmlFor="damatAdi">{nameConfig.secondary}</label>
+                <input id="damatAdi" name="damatAdi" required minLength={2} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div>
         <h3 className="font-display" style={{ color: "var(--gold-deep)", margin: "0 0 16px" }}>
@@ -465,22 +482,7 @@ export default function RequestForm() {
           <input id="kurulumSaati" name="kurulumSaati" type="time" required />
         </div>
 
-        <div>
-          <label>Organizasyon Tercihi</label>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            {ORG_TYPE_OPTIONS.map((o) => (
-              <PickerCard
-                key={o.value}
-                imageUrl={null}
-                label={o.label}
-                selected={organizationType === o.value}
-                onClick={() => setOrganizationType(o.value)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="grid-2" style={{ marginTop: 20 }}>
+        <div className="grid-2">
           <div>
             <label>Asansör Var mı?</label>
             <div style={{ display: "flex", gap: 10 }}>

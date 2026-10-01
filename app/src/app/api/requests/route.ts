@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { sendNewRequestNotification, sendCustomerConfirmation } from "@/lib/mail";
+import { ORG_TYPE_LABEL, ORG_TYPE_VALUES, buildCustomerName } from "@/lib/organizationType";
 
 const configSelectionSchema = z.object({
   optionId: z.string().optional(),
@@ -12,14 +13,14 @@ const configSelectionSchema = z.object({
 
 const requestSchema = z.object({
   gelinAdi: z.string().min(2).max(120),
-  damatAdi: z.string().min(2).max(120),
+  damatAdi: z.string().min(2).max(120).optional(),
   phone: z.string().regex(/^5\d{9}$/, "Telefon numarası 5XX XXX XXXX formatında olmalı"),
   ikinciIletisim: z.string().min(3).max(60),
   email: z.string().email().optional().or(z.literal("")),
   adres: z.string().min(5).max(500),
   eventDate: z.string(),
   kurulumSaati: z.string().regex(/^\d{2}:\d{2}$/, "Geçersiz saat"),
-  organizationType: z.enum(["SOZ", "NISAN", "DUGUN", "KINA", "DOGUM_GUNU", "BRIDE_TO_BE", "DIGER"]),
+  organizationType: z.enum(ORG_TYPE_VALUES),
   asansorVarMi: z.boolean(),
   kat: z.enum(["GIRIS", "KAT1", "KAT2", "KAT3", "KAT4_UZERI"]),
   conceptId: z.string(),
@@ -28,15 +29,6 @@ const requestSchema = z.object({
   configSelections: z.record(configSelectionSchema).optional(),
 });
 
-const ORG_TYPE_LABEL: Record<string, string> = {
-  SOZ: "Söz",
-  NISAN: "Nişan",
-  DUGUN: "Düğün",
-  KINA: "Kına",
-  DOGUM_GUNU: "Doğum Günü",
-  BRIDE_TO_BE: "Bride to Be",
-  DIGER: "Diğer",
-};
 const KAT_LABEL: Record<string, string> = {
   GIRIS: "Giriş Kat",
   KAT1: "1. Kat",
@@ -113,13 +105,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const customerName = `${data.gelinAdi} & ${data.damatAdi}`;
+  const customerName = buildCustomerName(data.gelinAdi, data.damatAdi);
 
   const created = await prisma.bookingRequest.create({
     data: {
       customerName,
       gelinAdi: data.gelinAdi,
-      damatAdi: data.damatAdi,
+      damatAdi: data.damatAdi || null,
       phone: data.phone,
       ikinciIletisim: data.ikinciIletisim,
       email: data.email || null,
@@ -139,18 +131,18 @@ export async function POST(req: NextRequest) {
   await sendNewRequestNotification({
     customerName,
     gelinAdi: data.gelinAdi,
-    damatAdi: data.damatAdi,
+    damatAdi: data.damatAdi || null,
     phone: data.phone,
     ikinciIletisim: data.ikinciIletisim,
     email: data.email || null,
     adres: data.adres,
     eventDate,
     kurulumSaati: data.kurulumSaati,
+    organizationType: data.organizationType,
     organizationTypeLabel: ORG_TYPE_LABEL[data.organizationType],
     asansorVarMi: data.asansorVarMi,
     katLabel: KAT_LABEL[data.kat],
     conceptName: concept.name,
-    guestCount: data.guestCount ?? null,
     message: data.message ?? null,
     configSummary,
   });

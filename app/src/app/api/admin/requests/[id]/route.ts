@@ -1,17 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { ORG_TYPE_LABEL, getNameFieldConfig } from "@/lib/organizationType";
 
 export const dynamic = "force-dynamic";
 
-const ORG_TYPE_LABEL: Record<string, string> = {
-  SOZ: "Söz",
-  NISAN: "Nişan",
-  DUGUN: "Düğün",
-  KINA: "Kına",
-  DOGUM_GUNU: "Doğum Günü",
-  BRIDE_TO_BE: "Bride to Be",
-  DIGER: "Diğer",
-};
 const KAT_LABEL: Record<string, string> = {
   GIRIS: "Giriş Kat",
   KAT1: "1. Kat",
@@ -47,6 +39,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     ...bookingRequest,
     organizationTypeLabel: bookingRequest.organizationType ? ORG_TYPE_LABEL[bookingRequest.organizationType] : null,
     katLabel: bookingRequest.kat ? KAT_LABEL[bookingRequest.kat] : null,
+    nameFieldConfig: getNameFieldConfig(bookingRequest.organizationType),
     configSummary,
   });
 }
