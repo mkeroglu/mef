@@ -47,6 +47,10 @@ const ORG_TYPE_OPTIONS = [
   { value: "SOZ", label: "Söz" },
   { value: "NISAN", label: "Nişan" },
   { value: "DUGUN", label: "Düğün" },
+  { value: "KINA", label: "Kına" },
+  { value: "DOGUM_GUNU", label: "Doğum Günü" },
+  { value: "BRIDE_TO_BE", label: "Bride to Be" },
+  { value: "DIGER", label: "Diğer" },
 ];
 
 function PickerCard({
@@ -316,7 +320,6 @@ export default function RequestForm() {
       asansorVarMi: asansorVarMi === "true",
       kat,
       conceptId,
-      guestCount: form.get("guestCount") ? Number(form.get("guestCount")) : undefined,
       message: String(form.get("message") || ""),
       configSelections,
     };
@@ -497,11 +500,6 @@ export default function RequestForm() {
             </select>
           </div>
         </div>
-
-        <div style={{ marginTop: 20 }}>
-          <label htmlFor="guestCount">Davetli Sayısı (opsiyonel)</label>
-          <input id="guestCount" name="guestCount" type="number" min={1} style={{ maxWidth: 200 }} />
-        </div>
       </div>
 
       {groups?.map((g) => (
@@ -538,12 +536,19 @@ export default function RequestForm() {
                 <PickerCard imageUrl={null} label="Hayır" selected={booleanValues[g.key] === false} onClick={() => setBooleanValues((p) => ({ ...p, [g.key]: false }))} />
               </div>
               {booleanValues[g.key] === true && (
-                <input
-                  style={{ marginTop: 10, maxWidth: 360 }}
-                  placeholder="Not (örn. adet, tercih)"
-                  value={booleanNotes[g.key] || ""}
-                  onChange={(e) => setBooleanNotes((p) => ({ ...p, [g.key]: e.target.value }))}
-                />
+                <div style={{ marginTop: 10, maxWidth: 360 }}>
+                  {g.helpText && (
+                    <label htmlFor={`note-${g.key}`} style={{ marginBottom: 4 }}>
+                      {g.helpText}
+                    </label>
+                  )}
+                  <input
+                    id={`note-${g.key}`}
+                    placeholder={g.helpText ? "Buraya yazın" : "Not (örn. adet, tercih)"}
+                    value={booleanNotes[g.key] || ""}
+                    onChange={(e) => setBooleanNotes((p) => ({ ...p, [g.key]: e.target.value }))}
+                  />
+                </div>
               )}
             </div>
           )}

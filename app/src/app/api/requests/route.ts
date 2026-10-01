@@ -19,7 +19,7 @@ const requestSchema = z.object({
   adres: z.string().min(5).max(500),
   eventDate: z.string(),
   kurulumSaati: z.string().regex(/^\d{2}:\d{2}$/, "Geçersiz saat"),
-  organizationType: z.enum(["SOZ", "NISAN", "DUGUN"]),
+  organizationType: z.enum(["SOZ", "NISAN", "DUGUN", "KINA", "DOGUM_GUNU", "BRIDE_TO_BE", "DIGER"]),
   asansorVarMi: z.boolean(),
   kat: z.enum(["GIRIS", "KAT1", "KAT2", "KAT3", "KAT4_UZERI"]),
   conceptId: z.string(),
@@ -28,7 +28,15 @@ const requestSchema = z.object({
   configSelections: z.record(configSelectionSchema).optional(),
 });
 
-const ORG_TYPE_LABEL: Record<string, string> = { SOZ: "Söz", NISAN: "Nişan", DUGUN: "Düğün" };
+const ORG_TYPE_LABEL: Record<string, string> = {
+  SOZ: "Söz",
+  NISAN: "Nişan",
+  DUGUN: "Düğün",
+  KINA: "Kına",
+  DOGUM_GUNU: "Doğum Günü",
+  BRIDE_TO_BE: "Bride to Be",
+  DIGER: "Diğer",
+};
 const KAT_LABEL: Record<string, string> = {
   GIRIS: "Giriş Kat",
   KAT1: "1. Kat",

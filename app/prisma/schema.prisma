@@ -17,6 +17,10 @@ enum OrganizationType {
   SOZ
   NISAN
   DUGUN
+  KINA
+  DOGUM_GUNU
+  BRIDE_TO_BE
+  DIGER
 }
 
 enum FloorType {
@@ -55,6 +59,17 @@ model Concept {
 
   requests BookingRequest[]
   bookings Booking[]
+  images   ConceptImage[]
+}
+
+model ConceptImage {
+  id        String   @id @default(cuid())
+  conceptId String
+  concept   Concept  @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  imageData Bytes    @db.LongBlob
+  imageMime String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
 }
 
 model Settings {

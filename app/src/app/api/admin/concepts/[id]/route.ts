@@ -18,12 +18,19 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       imageUrl: true,
       order: true,
       active: true,
+      images: {
+        orderBy: { order: "asc" },
+        select: { id: true, order: true },
+      },
     },
   });
   if (!concept) {
     return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
   }
-  return NextResponse.json(concept);
+  return NextResponse.json({
+    ...concept,
+    images: concept.images.map((img) => ({ id: img.id, url: `/api/images/concept-gallery/${img.id}` })),
+  });
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

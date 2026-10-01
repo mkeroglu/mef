@@ -3,7 +3,15 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-const ORG_TYPE_LABEL: Record<string, string> = { SOZ: "Söz", NISAN: "Nişan", DUGUN: "Düğün" };
+const ORG_TYPE_LABEL: Record<string, string> = {
+  SOZ: "Söz",
+  NISAN: "Nişan",
+  DUGUN: "Düğün",
+  KINA: "Kına",
+  DOGUM_GUNU: "Doğum Günü",
+  BRIDE_TO_BE: "Bride to Be",
+  DIGER: "Diğer",
+};
 const KAT_LABEL: Record<string, string> = {
   GIRIS: "Giriş Kat",
   KAT1: "1. Kat",
